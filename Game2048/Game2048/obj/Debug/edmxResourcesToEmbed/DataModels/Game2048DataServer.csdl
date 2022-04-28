@@ -1,0 +1,72 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema Namespace="Game2048Model" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+  <EntityType Name="gmrGamer">
+    <Key>
+      <PropertyRef Name="gmrGamerId" />
+    </Key>
+    <Property Name="gmrGamerId" Type="Guid" Nullable="false" />
+    <Property Name="gmrGamerName" Type="String" MaxLength="20" FixedLength="false" Unicode="true" Nullable="false" />
+    <NavigationProperty Name="gmrResults" Relationship="Self.fk_gmrGamer" FromRole="gmrGamer" ToRole="gmrResults" />
+  </EntityType>
+  <EntityType Name="gmrResult">
+    <Key>
+      <PropertyRef Name="gmrResultId" />
+    </Key>
+    <Property Name="gmrResultId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="gmrGamerId" Type="Guid" Nullable="false" />
+    <Property Name="gmrResultGamerScore" Type="Int64" Nullable="false" />
+    <Property Name="gmrResultGamerBiggestTile" Type="Int32" Nullable="false" />
+    <Property Name="gmrResultDateTime" Type="DateTime" Nullable="false" Precision="3" />
+    <NavigationProperty Name="gmrGamer" Relationship="Self.fk_gmrGamer" FromRole="gmrResults" ToRole="gmrGamer" />
+  </EntityType>
+  <EntityType Name="vwgmrResult">
+    <Key>
+      <PropertyRef Name="gmrResultGamerScore" />
+      <PropertyRef Name="gmrResultGamerBiggestTile" />
+      <PropertyRef Name="gmrResultDateTime" />
+    </Key>
+    <Property Name="gmrGamerId" Type="Guid" />
+    <Property Name="gmrGamerName" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+    <Property Name="gmrResultGamerScore" Type="Int64" Nullable="false" />
+    <Property Name="gmrResultGamerBiggestTile" Type="Int32" Nullable="false" />
+    <Property Name="gmrResultDateTime" Type="DateTime" Nullable="false" Precision="3" />
+  </EntityType>
+  <EntityType Name="database_firewall_rules">
+    <Key>
+      <PropertyRef Name="id" />
+      <PropertyRef Name="name" />
+      <PropertyRef Name="start_ip_address" />
+      <PropertyRef Name="end_ip_address" />
+      <PropertyRef Name="create_date" />
+      <PropertyRef Name="modify_date" />
+    </Key>
+    <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="name" Type="String" MaxLength="128" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="start_ip_address" Type="String" MaxLength="45" FixedLength="false" Unicode="false" Nullable="false" />
+    <Property Name="end_ip_address" Type="String" MaxLength="45" FixedLength="false" Unicode="false" Nullable="false" />
+    <Property Name="create_date" Type="DateTime" Nullable="false" Precision="3" />
+    <Property Name="modify_date" Type="DateTime" Nullable="false" Precision="3" />
+  </EntityType>
+  <Association Name="fk_gmrGamer">
+    <End Role="gmrGamer" Type="Self.gmrGamer" Multiplicity="1" />
+    <End Role="gmrResults" Type="Self.gmrResult" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="gmrGamer">
+        <PropertyRef Name="gmrGamerId" />
+      </Principal>
+      <Dependent Role="gmrResults">
+        <PropertyRef Name="gmrGamerId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <EntityContainer Name="Game2048Entities" annotation:LazyLoadingEnabled="true">
+    <EntitySet Name="gmrGamers" EntityType="Self.gmrGamer" />
+    <EntitySet Name="gmrResults" EntityType="Self.gmrResult" />
+    <EntitySet Name="vwgmrResults" EntityType="Self.vwgmrResult" />
+    <EntitySet Name="database_firewall_rules" EntityType="Self.database_firewall_rules" />
+    <AssociationSet Name="fk_gmrGamer" Association="Self.fk_gmrGamer">
+      <End Role="gmrGamer" EntitySet="gmrGamers" />
+      <End Role="gmrResults" EntitySet="gmrResults" />
+    </AssociationSet>
+  </EntityContainer>
+</Schema>
